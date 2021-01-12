@@ -55,7 +55,7 @@ def get_chart_info_pie(mysql, column, semester="") -> list:
     #type could be by entity_type or finding type
     cursor = mysql.get_db().cursor()
 
-    query = "select {0}, count(*) from findings".format(column)
+    query = "select {0}, count(*), sum(finding_amount) from findings".format(column)
 
     if semester != "":
         query += " where semester = '{0}'".format(semester)
@@ -68,6 +68,7 @@ def get_chart_info_pie(mysql, column, semester="") -> list:
     res = {}
     for r in query_result:
         res[r[0]] = r[1]
+        res["total_amount_"+r[0]] = r[2]
     return res
 
 

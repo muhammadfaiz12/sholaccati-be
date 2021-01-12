@@ -26,12 +26,15 @@ def chart_pie():
 def read_table_filter(request) -> dict:
     filter = {}
 
-    list_of_filter = ["entity_name", "entity_type", "finding_amount_min", "finding_amount_max" "semester", "finding_type", "detail", "title"]
+    list_of_filter = ["entity_name", "entity_type", "finding_amount_min", "finding_amount_max", "semester", "finding_type", "detail", "title"]
     for f in list_of_filter:
         filter_value = request.args.get(f)
+        print(f+" "+str(filter_value is None))
+
         if filter_value is None:
             continue
         filter[f] = filter_value
+    print(str(filter))
     return filter
 
 def read_chart_filter(request) -> dict:
