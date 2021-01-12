@@ -55,13 +55,12 @@ def get_chart_info_pie(mysql, column, semester="") -> list:
     #type could be by entity_type or finding type
     cursor = mysql.get_db().cursor()
 
-    query = "select {0}, count(*) from findings group by {1}"
-    query = query.format(column, column)
+    query = "select {0}, count(*) from findings".format(column)
 
     if semester != "":
         query += " where semester = '{0}'".format(semester)
     
-    query += ";"
+    query += " GROUP BY {0};".format(column)
     print("[GETCHARTINFOPIE] " + query)
     cursor.execute(query)
     query_result = cursor.fetchall()
