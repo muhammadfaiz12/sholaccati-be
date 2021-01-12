@@ -10,12 +10,21 @@ def init_db(app):
     return mysql
 
 def append_query_with_filter(query:str, filter: dict):
+    added_filter = False
     query += " where "
     for f in filter:
         if "finding_amount" in f:
-            query += "finding_amount >= {0} and finding_amount <= {1} ".format(filter["finding_amount_min"], filter["finding_amount_max"])
+            query += "finding_amount >= {0} and finding_amount <= {1} and ".format(filter["finding_amount_min"], filter["finding_amount_max"])
+            added_filter = True
+        elif "title" == f or "detail" == f or "entity_name" == f:
+            continue
         else:
-            query += "{0} = '{1}' ".format(f, filter[f])
+            query += "{0} = '{1}' and ".format(f, filter[f])
+            added_filter = True
+    # double rstrip to remove whitespaces and trailing and
+    query = query.rstrip().rstrip("and")
+    if not added_filter:
+        query = query.replace("where","")
     query += ";"
     return query
 
