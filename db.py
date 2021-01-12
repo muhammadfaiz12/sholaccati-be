@@ -33,7 +33,7 @@ def get_all_finding(mysql, filter: dict):
     query = 'SELECT id, entity_name, entity_type, finding_amount, semester, finding_type, detail, title FROM findings'
     if len(filter.keys()) > 0:
         query = append_query_with_filter(query, filter)
-    print(query)
+    print("[GETALLFINDING] " + query)
     cursor.execute(query)
     accounts = cursor.fetchall() 
     res = []
@@ -50,3 +50,25 @@ def get_all_finding(mysql, filter: dict):
         }
         res.append(temp)
     return res
+
+def get_chart_info_pie(mysql, column, semester="") -> list:
+    #type could be by entity_type or finding type
+    cursor = mysql.get_db().cursor()
+
+    query = "select {0}, count(*) from findings group by {1}"
+    query = query.format(column, column)
+
+    if semester != "":
+        query += " where semester = '{0}'".format(semester)
+    
+    query += ";"
+    print("[GETCHARTINFOPIE] " + query)
+    cursor.execute(query)
+    query_result = cursor.fetchall()
+
+    res = {}
+    for r in query_result:
+        res[r[0]] = r[1]
+    return res
+
+
