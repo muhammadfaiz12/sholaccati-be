@@ -12,7 +12,20 @@ def show_chart_data(db, filter: dict):
             result = get_chart_info_pie(db, filter['column'], filter['semester'])
         else:
             result = get_chart_info_pie(db, filter['column'], "")
-    result = count_total_info_chart(result)
+        result = count_total_info_chart(result)
+
+    elif filter["chart_type"] == "full":
+        list_of_semester = ["2018-I", "2018-II", "2019-I", "2019-II", "2020-I"]
+        results = []
+        for s in list_of_semester:
+            try:
+                temp = get_chart_info_pie(db, filter['column'], s)
+            except Exception:
+                print("[ShowChartData] Error on processing semester "+s)
+            temp = count_total_info_chart(temp)
+            results.append(temp)
+        result = results
+
     return result
 
 def show_finding_search(res, filter: dict):
