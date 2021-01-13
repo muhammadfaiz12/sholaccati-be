@@ -1,8 +1,10 @@
 from db import get_all_finding, get_chart_info_pie
+from bpk import *
 
 def show_findings(db, filter: dict):
     print(str(filter))
     res = get_all_finding(db, filter)
+    res = show_finding_search(res, filter)
     return res
 
 def show_chart_data(db, filter: dict):
@@ -29,15 +31,21 @@ def show_chart_data(db, filter: dict):
     return result
 
 def show_finding_search(res, filter: dict):
+    result = []
     relevant_column = ["title" , "detail", "entity_name"]
     for c in relevant_column:
         if c in filter.keys():
-            dataset = [(row["id"],row[c]) for row in res]
-            res = search_it(filter[c], dataset)
+            dataset = [(row,row[c]) for row in res]
+            search_res = search_warper(filter[c], dataset)
+            result = [x[0] for x in search_res] #0 because 1 is the grade
+            res = result #for multi-filter search
+    return res
 
 def count_total_info_chart(result):
     total = 0
     for k in result.keys():
+        if "total_amount" in k:
+            continue
         try:
             total += int(result[k])
         except Exception as e:
@@ -46,5 +54,6 @@ def count_total_info_chart(result):
     return result
 
 
-def search_it(keyword, dataset):
-    pass
+def search_warper(keyword, dataset):
+    result = general_search(dataset, keyword)
+    return result
